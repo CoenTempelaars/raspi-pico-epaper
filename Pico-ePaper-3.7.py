@@ -75,8 +75,8 @@ class EPD_3in7:
         self.buffer = bytearray(self.height * self.width // 8)
         self.image = framebuf.FrameBuffer(self.buffer, self.width, self.height, framebuf.MONO_HLSB)
 
-        self.EPD_3IN7_1Gray_init()
-        self.EPD_3IN7_1Gray_Clear()
+        self.init()
+        self.clear()
         time.sleep_ms(500)
 
     def digital_write(self, pin, value):
@@ -129,7 +129,7 @@ class EPD_3in7:
         self.send_command(0X07)  # deep sleep
         self.send_data(0xA5)
 
-    def EPD_3IN7_1Gray_init(self):
+    def init(self):
         self.reset()
 
         self.send_command(0x12)
@@ -201,7 +201,7 @@ class EPD_3in7:
         self.send_command(0x22)   # Display Update Control 2
         self.send_data(0xCF)
 
-    def EPD_3IN7_1Gray_Clear(self):
+    def clear(self):
 
         high = self.height
         if( self.width % 8 == 0) :
@@ -226,7 +226,7 @@ class EPD_3in7:
         self.send_command(0x20)
         self.wait_until_idle()
 
-    def EPD_3IN7_1Gray_Display(self,Image):
+    def display(self,Image):
 
         high = self.height
         if( self.width % 8 == 0) :
@@ -263,7 +263,7 @@ if __name__=='__main__':
     epd.image.text("Waveshare", 5, 10, epd.black)
     epd.image.text("Pico_ePaper-3.7", 5, 40, epd.black)
     epd.image.text("Raspberry Pico", 5, 70, epd.black)
-    epd.EPD_3IN7_1Gray_Display(epd.buffer)
+    epd.display(epd.buffer)
     time.sleep_ms(500)
 
     epd.deep_sleep()
