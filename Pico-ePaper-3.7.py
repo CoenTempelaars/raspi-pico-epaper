@@ -85,9 +85,6 @@ class EPD_3in7:
     def digital_read(self, pin):
         return pin.value()
 
-    def delay_ms(self, delaytime):
-        time.sleep(delaytime / 1000.0)
-
     def spi_writebyte(self, data):
         self.spi.write(bytearray(data))
 
@@ -97,11 +94,11 @@ class EPD_3in7:
     # Hardware reset
     def reset(self):
         self.digital_write(self.reset_pin, 1)
-        self.delay_ms(30)
+        time.sleep_ms(30)
         self.digital_write(self.reset_pin, 0)
-        self.delay_ms(3)
+        time.sleep_ms(3)
         self.digital_write(self.reset_pin, 1)
-        self.delay_ms(30)
+        time.sleep_ms(30)
 
     def send_command(self, command):
         self.digital_write(self.dc_pin, 0)
@@ -117,8 +114,8 @@ class EPD_3in7:
 
     def wait_until_idle(self):
         while(self.digital_read(self.busy_pin) == 1):
-            self.delay_ms(10)
-        self.delay_ms(200)
+            time.sleep_ms(10)
+        time.sleep_ms(200)
 
     def load_lut(self):
         self.send_command(0x32)
@@ -129,7 +126,7 @@ class EPD_3in7:
         self.reset()
 
         self.send_command(0x12)
-        self.delay_ms(300)
+        time.sleep_ms(300)
 
         self.send_command(0x46)
         self.send_data(0xF7)
@@ -267,6 +264,6 @@ if __name__=='__main__':
     epd.image1Gray.text("Pico_ePaper-3.7", 5, 40, epd.black)
     epd.image1Gray.text("Raspberry Pico", 5, 70, epd.black)
     epd.EPD_3IN7_1Gray_Display(epd.buffer_1Gray)
-    epd.delay_ms(500)
+    time.sleep_ms(500)
 
     epd.Sleep()
