@@ -122,6 +122,13 @@ class EPD_3in7:
         for count in range(0, 105):
             self.send_data(EPD_3IN7_lut_1Gray_GC[count])
 
+    def deep_sleep(self):
+        self.send_command(0X50)
+        self.send_data(0xf7)
+        self.send_command(0X02)  # power off
+        self.send_command(0X07)  # deep sleep
+        self.send_data(0xA5)
+
     def EPD_3IN7_1Gray_init(self):
         self.reset()
 
@@ -247,13 +254,6 @@ class EPD_3in7:
         self.send_command(0x20)
         self.wait_until_idle()
 
-    def Sleep(self):
-        self.send_command(0X50)
-        self.send_data(0xf7)
-        self.send_command(0X02)  # power off
-        self.send_command(0X07)  # deep sleep
-        self.send_data(0xA5)
-
 if __name__=='__main__':
 
     epd = EPD_3in7()
@@ -266,4 +266,4 @@ if __name__=='__main__':
     epd.EPD_3IN7_1Gray_Display(epd.buffer_1Gray)
     time.sleep_ms(500)
 
-    epd.Sleep()
+    epd.deep_sleep()
