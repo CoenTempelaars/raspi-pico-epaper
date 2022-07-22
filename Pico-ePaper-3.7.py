@@ -291,42 +291,6 @@ class EPD_3in7:
         self.send_command(0x20)
         self.ReadBusy()
 
-    def EPD_3IN7_1Gray_Display_Part(self,Image):
-
-        high = self.height
-        if( self.width % 8 == 0) :
-            wide =  self.width // 8
-        else :
-            wide =  self.width // 8 + 1
-
-        self.send_command(0x44)
-        self.send_data(0x00)
-        self.send_data(0x00)
-        self.send_data((self.width-1) & 0xff)
-        self.send_data(((self.width-1)>>8) & 0x03)
-        self.send_command(0x45)
-        self.send_data(0x00)
-        self.send_data(0x00)
-        self.send_data((self.height-1) & 0xff)
-        self.send_data(((self.height-1)>>8) & 0x03)
-
-        self.send_command(0x4E)   # SET_RAM_X_ADDRESS_COUNTER
-        self.send_data(0x00)
-        self.send_data(0x00)
-
-        self.send_command(0x4F)   # SET_RAM_Y_ADDRESS_COUNTER
-        self.send_data(0x00)
-        self.send_data(0x00)
-
-        self.send_command(0x24)
-        for j in range(0, high):
-            for i in range(0, wide):
-                self.send_data(Image[i + j * wide])
-
-        self.Load_LUT(2)
-        self.send_command(0x20)
-        self.ReadBusy()
-
     def Sleep(self):
         self.send_command(0X50)
         self.send_data(0xf7)
@@ -345,11 +309,5 @@ if __name__=='__main__':
     epd.image1Gray.text("Raspberry Pico", 5, 70, epd.black)
     epd.EPD_3IN7_1Gray_Display(epd.buffer_1Gray)
     epd.delay_ms(500)
-
-    epd.EPD_3IN7_1Gray_init()
-    for i in range(0, 10):
-        epd.image1Gray.fill_rect(0, 430, 280, 10, epd.white)
-        epd.image1Gray.text(str(i), 136, 431, epd.black)
-        epd.EPD_3IN7_1Gray_Display_Part(epd.buffer_1Gray)
 
     epd.Sleep()
