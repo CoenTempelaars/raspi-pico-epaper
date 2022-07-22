@@ -63,8 +63,6 @@ class EPD_3in7:
         self.width = EPD_WIDTH
         self.height = EPD_HEIGHT
 
-        self.lut_1Gray_GC = EPD_3IN7_lut_1Gray_GC
-
         self.black = 0x00
         self.white = 0xff
         self.darkgray = 0xaa
@@ -124,13 +122,10 @@ class EPD_3in7:
         self.delay_ms(200)
         print("e-Paper busy release")
 
-    def Load_LUT(self,lut):
+    def load_lut(self):
         self.send_command(0x32)
         for count in range(0, 105):
-            if lut == 1 :
-                self.send_data(self.lut_1Gray_GC[count])
-            else:
-                print("There is no such lut ")
+            self.send_data(EPD_3IN7_lut_1Gray_GC[count])
 
     def EPD_3IN7_1Gray_init(self):
         self.reset()
@@ -224,7 +219,7 @@ class EPD_3in7:
             for i in range(0, wide):
                 self.send_data(0Xff)
 
-        self.Load_LUT(1)
+        self.load_lut()
 
         self.send_command(0x20)
         self.ReadBusy()
@@ -252,7 +247,7 @@ class EPD_3in7:
             for i in range(0, wide):
                 self.send_data(Image[i + j * wide])
 
-        self.Load_LUT(1)
+        self.load_lut()
 
         self.send_command(0x20)
         self.ReadBusy()
