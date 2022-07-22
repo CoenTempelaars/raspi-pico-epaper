@@ -72,8 +72,8 @@ class EPD_3in7:
         self.spi.init(baudrate=4000_000)
         self.dc_pin = Pin(DC_PIN, Pin.OUT)
 
-        self.buffer_1Gray = bytearray(self.height * self.width // 8)
-        self.image1Gray = framebuf.FrameBuffer(self.buffer_1Gray, self.width, self.height, framebuf.MONO_HLSB)
+        self.buffer = bytearray(self.height * self.width // 8)
+        self.image = framebuf.FrameBuffer(self.buffer, self.width, self.height, framebuf.MONO_HLSB)
 
         self.EPD_3IN7_1Gray_init()
         self.EPD_3IN7_1Gray_Clear()
@@ -258,12 +258,12 @@ if __name__=='__main__':
 
     epd = EPD_3in7()
 
-    epd.image1Gray.fill(0xff)
+    epd.image.fill(0xff)
 
-    epd.image1Gray.text("Waveshare", 5, 10, epd.black)
-    epd.image1Gray.text("Pico_ePaper-3.7", 5, 40, epd.black)
-    epd.image1Gray.text("Raspberry Pico", 5, 70, epd.black)
-    epd.EPD_3IN7_1Gray_Display(epd.buffer_1Gray)
+    epd.image.text("Waveshare", 5, 10, epd.black)
+    epd.image.text("Pico_ePaper-3.7", 5, 40, epd.black)
+    epd.image.text("Raspberry Pico", 5, 70, epd.black)
+    epd.EPD_3IN7_1Gray_Display(epd.buffer)
     time.sleep_ms(500)
 
     epd.deep_sleep()
