@@ -29,7 +29,7 @@
 
 from machine import Pin, SPI
 import framebuf
-import utime
+import time
 
 # Display resolution
 EPD_WIDTH       = 280
@@ -128,7 +128,7 @@ class EPD_3in7:
 
         self.EPD_3IN7_4Gray_init()
         self.EPD_3IN7_4Gray_Clear()
-        utime.sleep_ms(500)
+        time.sleep_ms(500)
 
     def digital_write(self, pin, value):
         pin.value(value)
@@ -137,7 +137,7 @@ class EPD_3in7:
         return pin.value()
 
     def delay_ms(self, delaytime):
-        utime.sleep(delaytime / 1000.0)
+        time.sleep(delaytime / 1000.0)
 
     def spi_writebyte(self, data):
         self.spi.write(bytearray(data))
