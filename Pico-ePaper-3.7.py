@@ -115,12 +115,10 @@ class EPD_3in7:
         self.spi_writebyte([data])
         self.digital_write(self.cs_pin, 1)
 
-    def ReadBusy(self):
-        print("e-Paper busy")
-        while(self.digital_read(self.busy_pin) == 1):      #  0: idle, 1: busy
+    def wait_until_idle(self):
+        while(self.digital_read(self.busy_pin) == 1):
             self.delay_ms(10)
         self.delay_ms(200)
-        print("e-Paper busy release")
 
     def load_lut(self):
         self.send_command(0x32)
@@ -135,10 +133,10 @@ class EPD_3in7:
 
         self.send_command(0x46)
         self.send_data(0xF7)
-        self.ReadBusy()
+        self.wait_until_idle()
         self.send_command(0x47)
         self.send_data(0xF7)
-        self.ReadBusy()
+        self.wait_until_idle()
 
         self.send_command(0x01)   # setting gaet number
         self.send_data(0xDF)
@@ -222,7 +220,7 @@ class EPD_3in7:
         self.load_lut()
 
         self.send_command(0x20)
-        self.ReadBusy()
+        self.wait_until_idle()
 
     def EPD_3IN7_1Gray_Display(self,Image):
 
@@ -250,7 +248,7 @@ class EPD_3in7:
         self.load_lut()
 
         self.send_command(0x20)
-        self.ReadBusy()
+        self.wait_until_idle()
 
     def Sleep(self):
         self.send_command(0X50)
