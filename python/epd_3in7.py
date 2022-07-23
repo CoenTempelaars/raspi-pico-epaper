@@ -115,6 +115,7 @@ class EPD_3in7:
             self.send_data(EPD_3IN7_lut_1Gray_GC[count])
 
     def deep_sleep(self):
+        time.sleep_ms(500)
         self.send_command(0X50)
         self.send_data(0xf7)
         self.send_command(0X02)  # power off
@@ -231,17 +232,3 @@ class EPD_3in7:
 
         self.send_command(0x20)
         self.wait_until_idle()
-
-if __name__=='__main__':
-
-    epd = EPD_3in7()
-
-    epd.image.fill(0xff)
-
-    epd.image.text("Waveshare", 5, 10, epd.black)
-    epd.image.text("Pico_ePaper-3.7", 5, 40, epd.black)
-    epd.image.text("Raspberry Pico", 5, 70, epd.black)
-    epd.show()
-    time.sleep_ms(500)
-
-    epd.deep_sleep()
