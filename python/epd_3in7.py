@@ -211,7 +211,7 @@ class EPD_3in7:
         self.send_command(0x20)
         self.wait_until_idle()
 
-    def display(self,Image):
+    def show(self):
         self.send_command(0x49)
         self.send_data(0x00)
 
@@ -225,7 +225,7 @@ class EPD_3in7:
         self.send_command(0x24)
         for j in range(0, EPD_HEIGHT):
             for i in range(0, EPD_WIDTH_BYTES):
-                self.send_data(Image[i + j * EPD_WIDTH_BYTES])
+                self.send_data(self.buffer[i + j * EPD_WIDTH_BYTES])
 
         self.load_lut()
 
@@ -241,7 +241,7 @@ if __name__=='__main__':
     epd.image.text("Waveshare", 5, 10, epd.black)
     epd.image.text("Pico_ePaper-3.7", 5, 40, epd.black)
     epd.image.text("Raspberry Pico", 5, 70, epd.black)
-    epd.display(epd.buffer)
+    epd.show()
     time.sleep_ms(500)
 
     epd.deep_sleep()
