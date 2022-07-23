@@ -33,6 +33,7 @@ import time
 
 # Display resolution
 EPD_WIDTH       = 280
+EPD_WIDTH_BYTES = 35
 EPD_HEIGHT      = 480
 
 RST_PIN         = 12
@@ -60,8 +61,6 @@ class EPD_3in7:
 
         self.busy_pin = Pin(BUSY_PIN, Pin.IN, Pin.PULL_UP)
         self.cs_pin = Pin(CS_PIN, Pin.OUT)
-        self.width = EPD_WIDTH
-        self.height = EPD_HEIGHT
 
         self.black = 0x00
         self.white = 0xff
@@ -72,8 +71,8 @@ class EPD_3in7:
         self.spi.init(baudrate=4000_000)
         self.dc_pin = Pin(DC_PIN, Pin.OUT)
 
-        self.buffer = bytearray(self.height * self.width // 8)
-        self.image = framebuf.FrameBuffer(self.buffer, self.width, self.height, framebuf.MONO_HLSB)
+        self.buffer = bytearray(EPD_HEIGHT * EPD_WIDTH_BYTES)
+        self.image = framebuf.FrameBuffer(self.buffer, EPD_WIDTH, EPD_HEIGHT, framebuf.MONO_HLSB)
 
         self.init()
         self.clear()
@@ -202,13 +201,6 @@ class EPD_3in7:
         self.send_data(0xCF)
 
     def clear(self):
-
-        high = self.height
-        if( self.width % 8 == 0) :
-            wide =  self.width // 8
-        else :
-            wide =  self.width // 8 + 1
-
         self.send_command(0x4E)
         self.send_data(0x00)
         self.send_data(0x00)
@@ -217,8 +209,8 @@ class EPD_3in7:
         self.send_data(0x00)
 
         self.send_command(0x24)
-        for j in range(0, high):
-            for i in range(0, wide):
+        for j in range(0, EPD_HEIGHT):
+            for i in range(0, EPD_WIDTH_BYTES):
                 self.send_data(0Xff)
 
         self.load_lut()
@@ -227,13 +219,6 @@ class EPD_3in7:
         self.wait_until_idle()
 
     def display(self,Image):
-
-        high = self.height
-        if( self.width % 8 == 0) :
-            wide =  self.width // 8
-        else :
-            wide =  self.width // 8 + 1
-
         self.send_command(0x49)
         self.send_data(0x00)
 
@@ -245,9 +230,9 @@ class EPD_3in7:
         self.send_data(0x00)
 
         self.send_command(0x24)
-        for j in range(0, high):
-            for i in range(0, wide):
-                self.send_data(Image[i + j * wide])
+        for j in range(0, EPD_HEIGHT):
+            for i in range(0, EPD_WIDTH_BYTES):
+                self.send_data(Image[i + j * EPD_WIDTH_BYTES])
 
         self.load_lut()
 
