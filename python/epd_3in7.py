@@ -29,6 +29,10 @@ EPD_WIDTH       = 280
 EPD_WIDTH_BYTES = 35
 EPD_HEIGHT      = 480
 
+# Canvas resolution (landscape orientation)
+CANVAS_WIDTH    = EPD_HEIGHT
+CANVAS_HEIGHT   = EPD_WIDTH
+
 RST_PIN         = 12
 DC_PIN          = 8
 CS_PIN          = 9
@@ -64,10 +68,10 @@ class EPD_3in7(framebuf.FrameBuffer):
         self.spi.init(baudrate=4000_000)
         self.dc_pin = Pin(DC_PIN, Pin.OUT)
 
-        self.width = EPD_WIDTH
-        self.height = EPD_HEIGHT
+        self.width = CANVAS_WIDTH
+        self.height = CANVAS_HEIGHT
         self.buffer = bytearray(EPD_HEIGHT * EPD_WIDTH_BYTES)
-        super().__init__(self.buffer, self.width, self.height, framebuf.MONO_HLSB)
+        super().__init__(self.buffer, self.width, self.height, framebuf.MONO_VLSB)
 
         self.init()
         self.clear()
@@ -215,6 +219,19 @@ class EPD_3in7(framebuf.FrameBuffer):
         self.wait_until_idle()
 
     def show(self):
+        epd_buffer = bytearray(EPD_HEIGHT * EPD_WIDTH_BYTES)
+
+        # Rotate self.buffer (a canvas in landscape orientation)
+        # and copy it into epd_buffer which is sent to the Pico
+        x=0; y=0; n=1; R=0
+        for i in range(1, EPD_WIDTH_BYTES+1):
+            for j in range(1, EPD_HEIGHT+1):
+                R = (n-x)+((n-y)*(EPD_WIDTH_BYTES-1))
+                epd_buffer[R-1] = self.buffer[n-1]
+                n += 1
+            x = n+i-1
+            y = n-1
+
         self.send_command(0x49)
         self.send_data(0x00)
 
@@ -228,7 +245,7 @@ class EPD_3in7(framebuf.FrameBuffer):
         self.send_command(0x24)
         for j in range(0, EPD_HEIGHT):
             for i in range(0, EPD_WIDTH_BYTES):
-                self.send_data(self.buffer[i + j * EPD_WIDTH_BYTES])
+                self.send_data(epd_buffer[i + j * EPD_WIDTH_BYTES])
 
         self.load_lut()
 
