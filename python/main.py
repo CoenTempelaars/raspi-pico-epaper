@@ -3,12 +3,15 @@
 # -----------------------------------------------------------------------------
 
 from epd_3in7 import EPD_3in7
+from writer import Writer
+import freesans20
 
 if __name__=='__main__':
     epd = EPD_3in7()
+    wri = Writer(epd, freesans20)
 
     epd.fill(0xff)
-    epd.text("Hello, world!", 5, 10, epd.black)
+    wri.printstring("Hello, world!", invert=True)
     epd.show()
 
     epd.deep_sleep()
