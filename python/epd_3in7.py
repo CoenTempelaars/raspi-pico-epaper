@@ -48,7 +48,7 @@ EPD_3IN7_lut_1Gray_GC =[
 0x22,0x22,0x22,0x22,0x22
 ]
 
-class EPD_3in7:
+class EPD_3in7(framebuf.FrameBuffer):
     def __init__(self):
         self.reset_pin = Pin(RST_PIN, Pin.OUT)
 
@@ -64,8 +64,10 @@ class EPD_3in7:
         self.spi.init(baudrate=4000_000)
         self.dc_pin = Pin(DC_PIN, Pin.OUT)
 
+        self.width = EPD_WIDTH
+        self.height = EPD_HEIGHT
         self.buffer = bytearray(EPD_HEIGHT * EPD_WIDTH_BYTES)
-        self.image = framebuf.FrameBuffer(self.buffer, EPD_WIDTH, EPD_HEIGHT, framebuf.MONO_HLSB)
+        super().__init__(self.buffer, self.width, self.height, framebuf.MONO_HLSB)
 
         self.init()
         self.clear()
