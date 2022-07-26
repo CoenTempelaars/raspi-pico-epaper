@@ -3,15 +3,16 @@
 # -----------------------------------------------------------------------------
 
 from epd_3in7 import EPD_3in7
-from writer import Writer
+from centerwriter import CenterWriter
 import freesans20
 
 if __name__=='__main__':
     epd = EPD_3in7()
-    wri = Writer(epd, freesans20)
+    cw = CenterWriter(epd, freesans20)
 
     epd.fill(0xff)
-    wri.printstring("Hello, world!", invert=True)
+    cw.set_vertical_spacing(10)
+    cw.write_lines(["Hello", "World"])
     epd.show()
 
     epd.deep_sleep()
