@@ -12,7 +12,9 @@ if __name__=='__main__':
 
     epd.fill(0xff)
     cw.set_vertical_spacing(10)
+    cw.set_vertical_shift(-30)
     cw.write_lines(["Hello", "World"])
     epd.show()
 
     epd.deep_sleep()
+
